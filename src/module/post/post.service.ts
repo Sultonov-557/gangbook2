@@ -1,34 +1,88 @@
-import { Injectable } from '@nestjs/common';
+import { Pagination } from './../../common/util/Pagination';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from './entities/post.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { User } from '../user/entities/user.entity';
+import { ApiResponse } from 'src/common/http/ApiResponse';
+import { FindAllDto } from './dto/findAll.dot';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post) private postRepository: Repository<Post>,
+    @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  create(createPostDto: CreatePostDto) {
-    const post = this.postRepository.create(createPostDto);
-    this.postRepository.save(post);
+  async create(createPostDto: CreatePostDto) {
+    const { description, media, title, users } = createPostDto;
+
+    const usersArray = [];
+
+    for (const id of usersArray) {
+      const user = await this.userRepository.findOneBy({ ID: id });
+
+      if (!user) {
+        throw new NotFoundException(`user with id ${id} not found`);
+      }
+
+      usersArray.push(user);
+    }
+
+    const post = this.postRepository.create({
+      description,
+      media,
+      title,
+      users: usersArray,
+    });
+
+    await this.postRepository.save(post);
+
+    return new ApiResponse(true);
   }
 
-  findAll() {
-    return `This action returns all post`;
+  async findAll(findAllDto: FindAllDto) {
+    const totalItemCount = await this.postRepository.count();
+
+    const { page, limit } = findAllDto;
+    const pagination = new Pagination(totalItemCount, limit, page);
+
+    const posts = await this.postRepository.find({
+      take: pagination.limit,
+      skip: pagination.offset,
+    });
+
+    return new ApiResponse(posts, pagination);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
+  async findOne(id: number) {
+    return new ApiResponse(this.postRepository.findOneBy({ ID: id }));
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  async update(id: number, updatePostDto: UpdatePostDto) {
+    const { description, title } = updatePostDto;
+    const post = await this.postRepository.findOneBy({ ID: id });
+
+    if (!post) {
+      throw new NotFoundException('post not found');
+    }
+
+    await this.postRepository.update(post, { description, title });
+
+    return new ApiResponse(true);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  async remove(id: number) {
+    const post = await this.postRepository.findOneBy({ ID: id });
+
+    if (!post) {
+      throw new NotFoundException('post not found');
+    }
+
+    await this.postRepository.remove(post);
+
+    return new ApiResponse(true);
   }
 }

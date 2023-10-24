@@ -1,23 +1,22 @@
+import { Ipagination } from '../interface/pagination.interface';
+
 export class Pagination {
-  public items: any[];
-  public pageSize: number;
+  public totalItems: number;
+  public limit: number;
   public currentPage: number;
   public pageCount: number;
-  public currentPageItems: any;
+  public offset: number;
 
-  constructor(items: any[], pageSize: number = 10, currentPage: number = 1) {
-    this.items = items;
-    this.pageSize = pageSize;
-    this.currentPage = currentPage;
-    this.pageCount = Math.ceil(this.items.length / this.pageSize);
-
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.currentPageItems = this.items.slice(startIndex, endIndex);
+  constructor(totalItems: number, limit: number = 10, currentPage: number = 1) {
+    this.totalItems = totalItems;
+    this.limit = limit;
+    this.currentPage = +currentPage;
+    this.pageCount = Math.ceil(this.totalItems / this.limit);
+    this.offset = (this.currentPage - 1) * this.limit;
   }
 
-  get simplify() {
-    const { currentPage, pageCount, pageSize } = this;
-    return { currentPage, pageCount, pageSize };
+  simplify(): Ipagination {
+    const { currentPage, pageCount, limit } = this;
+    return { currentPage, pageCount, limit };
   }
 }

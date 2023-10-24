@@ -17,11 +17,11 @@ export class UserService {
     createUserDto.password = encrypt(createUserDto.password);
     const user = this.userRepository.create(createUserDto);
     await this.userRepository.save(user);
-    return new ApiResponse(true, 200);
+    return new ApiResponse(true);
   }
 
   async findAll() {
-    return new ApiResponse(true, 200, await this.userRepository.find());
+    return new ApiResponse(await this.userRepository.find());
   }
 
   async findOne(id: number) {

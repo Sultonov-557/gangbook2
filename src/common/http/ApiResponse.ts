@@ -1,25 +1,20 @@
+import { Ipagination } from '../interface/pagination.interface';
 import { Pagination } from '../util/Pagination';
 
 export class ApiResponse {
-  public success: boolean;
-  public status: number;
   public data: any;
   public error: string;
   public date: Date = new Date();
-  public pagination: Pagination | any;
+  public pagination: Ipagination;
   constructor(
-    success: boolean,
-    status: number,
     data?: any,
     pagination?: Pagination,
     error?: string,
     date: Date = new Date(),
   ) {
-    this.success = success;
-    this.status = status;
-    this.data = data;
-    this.error = error;
+    this.data = data || null;
+    this.error = error || null;
     this.date = date;
-    this.pagination = pagination.simplify;
+    this.pagination = pagination.simplify();
   }
 }

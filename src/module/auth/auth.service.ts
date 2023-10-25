@@ -11,5 +11,5 @@ export class AuthService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async login(body) {}
+  async login(body: LoginAuthDto) {}
 }

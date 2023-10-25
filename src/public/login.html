@@ -23,8 +23,8 @@
         display: block;
         margin-bottom: 10px;
       }
-      input[type="text"],
-      input[type="password"] {
+      input[type='text'],
+      input[type='password'] {
         width: 100%;
         padding: 10px;
         border: 1px solid #707070;
@@ -34,7 +34,7 @@
         box-sizing: border-box;
         margin-bottom: 10px;
       }
-      input[type="submit"] {
+      input[type='submit'] {
         width: 100%;
         padding: 10px;
         background-color: #4caf50;
@@ -58,18 +58,19 @@
         const params = new URLSearchParams(url.searchParams);
         if (params.size != 2) return;
 
-        const username = params.get("username");
-        const password = params.get("password");
+        const username = params.get('username');
+        const password = params.get('password');
 
-        const req = await fetch("./api/auth/login", {
-          method: "post",
+        const req = await fetch('./api/auth/login', {
+          method: 'post',
           body: JSON.stringify({ username, password }),
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
         });
         const res = await req.json();
+        console.log(res);
         if (res.success) {
           document.cookie = res.token;
-          window.open("/", "_self");
+          window.open('/', '_self');
         }
       }
     </script>

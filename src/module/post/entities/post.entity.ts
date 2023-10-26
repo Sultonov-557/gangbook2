@@ -10,6 +10,8 @@ export class Post extends RootEntity {
 
   @Column() description: string;
 
+  @Column() viewCount:number
+
   @ManyToMany(() => User, (user) => user.posts)
   @JoinTable()
   users: User[];

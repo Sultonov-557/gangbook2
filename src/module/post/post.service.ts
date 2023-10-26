@@ -21,7 +21,7 @@ export class PostService {
 
     const usersArray = [];
 
-    for (const id of usersArray) {
+    for (const id of users) {
       const user = await this.userRepository.findOneBy({ ID: id });
 
       if (!user) {

@@ -15,6 +15,7 @@ export class ApiResponse {
     this.data = data || null;
     this.error = error || null;
     this.date = date;
-    this.pagination = pagination.simplify();
+    this.pagination = pagination?.simplify();
   }
 }
+

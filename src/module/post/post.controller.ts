@@ -11,6 +11,7 @@ import {
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { FindAllDto } from './dto/findAll.dot';
 
 @Controller('post')
 export class PostController {
@@ -22,7 +23,7 @@ export class PostController {
   }
 
   @Get()
-  findAll(@Query() query) {
+  findAll(@Query() query: FindAllDto) {
     return this.postService.findAll(query);
   }
 

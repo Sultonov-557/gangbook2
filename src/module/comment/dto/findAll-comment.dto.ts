@@ -1,5 +1,6 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional } from 'class-validator';
+import { IsInt, IsNumber, IsOptional } from 'class-validator';
 
 export class FindAllDto {
   @IsInt()
@@ -11,4 +12,9 @@ export class FindAllDto {
   @Type(() => Number)
   @IsOptional()
   limit: number;
+
+  @IsInt()
+  @Type(() => Number)
+  @IsOptional()
+  postID: number;
 }

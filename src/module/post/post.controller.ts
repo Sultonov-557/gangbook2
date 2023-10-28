@@ -13,7 +13,7 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { FindAllDto } from './dto/findAll.dot';
 
-@Controller('post')
+@Controller('api/post')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 

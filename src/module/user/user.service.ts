@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -12,6 +12,14 @@ export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
+
+  async search(query) {
+    const posts = await this.userRepository.find({
+      where: { username: Like(`%${query}%`) },
+    });
+
+    return new ApiResponse(posts);
+  }
 
   async create(createUserDto: CreateUserDto) {
     createUserDto.password = encrypt(createUserDto.password);

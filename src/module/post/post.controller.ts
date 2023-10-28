@@ -22,6 +22,16 @@ export class PostController {
     return this.postService.create(createPostDto);
   }
 
+  @Get('/search/:query')
+  search(@Param('query') query) {
+    return this.postService.search(query);
+  }
+
+  @Get('/hashtag/:hashtag')
+  hashTag(@Param('hashtag') hashTag) {
+    return this.postService.hashTag(hashTag);
+  }
+
   @Get()
   findAll(@Query() query: FindAllDto) {
     return this.postService.findAll(query);

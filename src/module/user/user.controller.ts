@@ -20,6 +20,11 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @Get('/search/:query')
+  search(@Param('query') query) {
+    return this.userService.search(query);
+  }
+
   @Get()
   findAll() {
     return this.userService.findAll();

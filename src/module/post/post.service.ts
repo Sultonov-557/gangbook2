@@ -4,20 +4,40 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from './entities/post.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { ApiResponse } from 'src/common/http/ApiResponse';
 import { FindAllDto } from './dto/findAll.dot';
+import { Hashtag } from '../hashtag/entities/hashtag.entity';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post) private postRepository: Repository<Post>,
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Hashtag) private hashTagRepository: Repository<Hashtag>,
   ) {}
 
+  async search(query) {
+    const posts = await this.postRepository.find({
+      where: { title: Like(`%${query}%`) },
+    });
+
+    return new ApiResponse(posts);
+  }
+
+  async hashTag(hashTag) {
+    const hashtag = await this.hashTagRepository.findOne({
+      where: { name: hashTag },
+      loadEagerRelations: true,
+      relations: ['posts'],
+    });
+
+    return new ApiResponse(hashtag.posts);
+  }
+
   async create(createPostDto: CreatePostDto) {
-    const { description, media, title, users } = createPostDto;
+    const { description, media, title, users, hashtags } = createPostDto;
 
     const usersArray = [];
 
@@ -31,16 +51,30 @@ export class PostService {
       usersArray.push(user);
     }
 
+    const hashTagsArray = [];
+
+    for (let name of hashtags) {
+      name = name.toLocaleLowerCase();
+      let hashtag = await this.hashTagRepository.findOneBy({ name });
+
+      if (!hashtag) {
+        hashtag = this.hashTagRepository.create({ name });
+      }
+
+      hashTagsArray.push(hashtag);
+    }
+
     const post = this.postRepository.create({
       description,
       media,
       title,
       users: usersArray,
+      hashTags: hashTagsArray,
     });
 
     await this.postRepository.save(post);
 
-    return new ApiResponse(true);
+    return new ApiResponse({ ID: post.ID });
   }
 
   async findAll(findAllDto: FindAllDto) {
@@ -58,18 +92,17 @@ export class PostService {
   }
 
   async findOne(id: number) {
-    return new ApiResponse(this.postRepository.findOneBy({ ID: id }));
+    return new ApiResponse(await this.postRepository.findOneBy({ ID: id }));
   }
 
   async update(id: number, updatePostDto: UpdatePostDto) {
-    const { description, title } = updatePostDto;
     const post = await this.postRepository.findOneBy({ ID: id });
 
     if (!post) {
       throw new NotFoundException('post not found');
     }
 
-    await this.postRepository.update(post, { description, title });
+    await this.postRepository.update({ ID: id }, updatePostDto);
 
     return new ApiResponse(true);
   }

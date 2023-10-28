@@ -9,6 +9,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { PostModule } from './module/post/post.module';
 import { CommentModule } from './module/comment/comment.module';
+import { HashtagModule } from './module/hashtag/hashtag.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { CommentModule } from './module/comment/comment.module';
     UserModule,
     PostModule,
     CommentModule,
+    HashtagModule,
   ],
   controllers: [AppController],
   providers: [AppService],

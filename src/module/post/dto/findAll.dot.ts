@@ -11,4 +11,6 @@ export class FindAllDto {
   @Type(() => Number)
   @IsOptional()
   limit: number;
+
+  
 }

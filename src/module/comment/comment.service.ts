@@ -56,6 +56,7 @@ export class CommentService {
       loadRelationIds: true,
       where: { post },
     });
+    
     return new ApiResponse(comments, pagination);
   }
 
@@ -64,31 +65,15 @@ export class CommentService {
   }
 
   async update(id: number, updateCommentDto: UpdateCommentDto) {
-    const { userID, postID, text } = updateCommentDto;
-
-    let user: User;
-    if (!userID) {
-      user = await this.userRepository.findOneBy({ ID: userID });
-
-      if (!user) {
-        throw new NotFoundException(`user with id ${userID} not found`);
-      }
-    }
-
-    let post: Post;
-    if (!postID) {
-      post = await this.postRepository.findOneBy({ ID: postID });
-
-      if (!post) {
-        throw new NotFoundException(`post with id ${postID} not found`);
-      }
-    }
+    const { text } = updateCommentDto;
 
     const comment = await this.commentRepository.findOneBy({ ID: id });
+
     if (!comment) {
       throw new NotFoundException(`comment with id ${id} not found`);
     }
-    await this.commentRepository.update(comment, { text, post, user });
+
+    await this.commentRepository.update({ ID: id }, { text });
 
     return new ApiResponse(true);
   }

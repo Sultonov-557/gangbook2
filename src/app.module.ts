@@ -16,7 +16,7 @@ import { HashtagModule } from './module/hashtag/hashtag.module';
     TypeOrmModule.forRoot(databaseConfig),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', '/src', '/public'),
-      serveStaticOptions: { extensions: ['html'] },
+      serveStaticOptions: { extensions: ['html'] ,redirect:false},
     }),
     AuthModule,
     UserModule,

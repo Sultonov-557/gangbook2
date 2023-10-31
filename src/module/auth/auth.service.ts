@@ -41,11 +41,8 @@ export class AuthService {
     return { success: true, token };
   }
 
-  async register(body) {
+  async register(body:RegisterAuthDto) {
     const { username, password, email } = body;
-    if (!username || !password || !email) {
-      throw new BadRequestException('username or password or emile not given');
-    }
 
     const userExists: boolean = await this.userRepository.exist({
       where: { username },
@@ -55,13 +52,15 @@ export class AuthService {
       throw new BadRequestException('username or emile already taken');
     }
 
-    const hashedPassword = hash(password, 5);
+    const hashedPassword = await hash.hash(password, 5);
 
-    await this.userRepository.insert({
+    const user= this.userRepository.create({
       username,
       password: hashedPassword,
       email,
     });
+    
+    await this.userRepository.save(user)
 
     return { success: true };
   }

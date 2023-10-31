@@ -19,4 +19,14 @@ export class AuthController {
   login(@Body() loginAuthDto: LoginAuthDto) {
     return this.authService.login(loginAuthDto);
   }
+
+  @Post('register')
+  register(@Body() registerAuthDto: RegisterAuthDto) {
+    return this.authService.register(registerAuthDto);
+  }
+
+  @Post('verify')
+  verify(@Body() body) {
+    return this.authService.verify(body);
+  }
 }

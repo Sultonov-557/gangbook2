@@ -29,7 +29,12 @@
         margin-bottom: 10px;
       }
 
-      .post .author {
+      .title{
+        text-decoration: none;
+        color: #fff;
+      }
+
+      .post .title {
         font-weight: bold;
       }
 
@@ -59,6 +64,18 @@
         if (!res.success) {
           window.open("./login", "_self");
         }
+
+        const postReq=await fetch("./api/post/",{method:"GET"})
+        const posts=(await postReq.json()).data
+        for( let i of posts){
+          const post= document.createElement("div")
+          post.classList.add("post")
+          post.innerHTML=`<a class="title" href="./post?id=${i.ID}">${i.title}</a>
+          <div class="message">${i.description}</div>
+          <div class="timestamp">${i.createdAt}</div>`
+          console.log(i);
+          document.querySelector("#content").appendChild(post)
+        }
       }
     </script>
 
@@ -66,12 +83,6 @@
       <h1>GANGBOOK</h1>
     </div>
     <div id="content">
-      <div class="post">
-        <div class="author">gangster</div>
-        <div class="timestamp">October 10, 2023</div>
-        <div class="message">Hello world</div>
-      </div>
-      <!-- More posts... -->
     </div>
   </body>
 </html>

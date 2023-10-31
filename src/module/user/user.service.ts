@@ -14,11 +14,11 @@ export class UserService {
   ) {}
 
   async search(query) {
-    const posts = await this.userRepository.find({
+    const users = await this.userRepository.find({
       where: { username: Like(`%${query}%`) },
     });
 
-    return new ApiResponse(posts);
+    return new ApiResponse(users);
   }
 
   async create(createUserDto: CreateUserDto) {

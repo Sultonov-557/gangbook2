@@ -86,6 +86,8 @@ export class PostService {
     const posts = await this.postRepository.find({
       take: pagination.limit,
       skip: pagination.offset,
+      relations:["users"],
+      loadEagerRelations:true
     });
 
     return new ApiResponse(posts, pagination);

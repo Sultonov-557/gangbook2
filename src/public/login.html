@@ -1,20 +1,27 @@
 <!doctype html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
     <style>
+      * {
+        box-sizing: border-box;
+      }
       body {
         font-family: Arial, sans-serif;
         color: white;
-        background-color: #252525;
+        background-color: #131313;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
       }
       .container {
-        max-width: 400px;
-        margin: 0 auto;
-        margin-top: 10%;
+        min-width: 400px;
+        width: 30%;
         padding: 20px;
         border-radius: 20px;
-        box-shadow: 0 0 30px rgba(10, 10, 10, 0.5);
+        background-color: #252525;
       }
       h2 {
         text-align: center;
@@ -47,6 +54,15 @@
       a {
         color: white;
         text-decoration: none;
+      }
+
+      @media screen and (max-width: 700px) {
+        body {
+          .container {
+            min-width: 200px;
+            width: 80%;
+          }
+        }
       }
     </style>
   </head>

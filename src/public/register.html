@@ -2,21 +2,26 @@
 <html>
   <head>
     <title>Register Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       body {
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
-        background-color: #252525;
+        background-color: #131313;
         color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
       }
 
       .container {
-        max-width: 400px;
-        margin: 0 auto;
+        min-width: 400px;
+        width: 30%;
         padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
+        border-radius: 20px;
+        background-color: #252525;
       }
 
       .container h2 {
@@ -24,16 +29,22 @@
         margin-bottom: 20px;
       }
 
-      .container input[type="text"],
-      .container input[type="email"],
-      .container input[type="password"] {
-        color: white;
-        width: 95%;
-        padding: 10px;
+      label {
+        display: block;
         margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 3px;
-        background-color: #252525;
+      }
+
+      .container input[type='text'],
+      .container input[type='email'],
+      .container input[type='password'] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #707070;
+        background-color: #404040;
+        color: white;
+        border-radius: 5px;
+        box-sizing: border-box;
+        margin-bottom: 10px;
       }
 
       a {
@@ -41,18 +52,28 @@
         text-decoration: none;
       }
 
-      .container button {
+      input[type='submit'] {
         width: 100%;
         padding: 10px;
         background-color: #4caf50;
         color: #fff;
         border: none;
-        border-radius: 3px;
+        border-radius: 5px;
         cursor: pointer;
+        margin-top: 10px;
       }
 
       .container button:hover {
         background-color: #45a049;
+      }
+
+      @media screen and (max-width: 700px) {
+        body {
+          .container {
+            min-width: 200px;
+            width: 80%;
+          }
+        }
       }
     </style>
   </head>
@@ -64,18 +85,18 @@
         const params = new URLSearchParams(url.searchParams);
         if (params.size != 3) return;
 
-        const username = params.get("username");
-        const password = params.get("password");
-        const email = params.get("email");
+        const username = params.get('username');
+        const password = params.get('password');
+        const email = params.get('email');
 
-        const req = await fetch("./api/auth/register", {
-          method: "post",
+        const req = await fetch('./api/auth/register', {
+          method: 'post',
           body: JSON.stringify({ username, password, email }),
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
         });
         const res = await req.json();
         if (res.success) {
-          window.open("/", "_self");
+          window.open('/', '_self');
         } else {
           alert(res.message);
         }
@@ -85,15 +106,16 @@
     <div class="container">
       <h2>Register</h2>
       <form>
-        <input name="username" type="text" placeholder="Username" required />
-        <input name="email" type="email" placeholder="Email" required />
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          required
-        />
-        <button type="submit">Register</button>
+        <label for="username">Username</label>
+        <input name="username" type="text" required />
+
+        <label for="email">Email</label>
+        <input name="email" type="email" required />
+
+        <label for="password">Password</label>
+        <input name="password" type="password" required />
+
+        <input type="submit" value="Register" />
       </form>
       <p style="text-align: center; margin-top: 10px">
         Already have an account? <a href="login">Login</a>

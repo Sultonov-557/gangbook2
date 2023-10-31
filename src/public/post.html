@@ -1,11 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>hello</h1>
-</body>
+<!doctype html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #252525;
+        color: #fff;
+      }
+
+      .post-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #131313;
+        border-radius: 4px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .post-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .post-username {
+        font-weight: bold;
+      }
+
+      .post-title{
+        font-size: 200%;
+      }
+
+      .post-image {
+        width: 100%;
+        max-height: 400px;
+        object-fit: cover;
+        margin-bottom: 10px;
+      }
+
+      .post-likes {
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .post-description {
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      start()
+          async function start() {
+        const url = new URL(document.URL);
+        const postID = url.searchParams.get('id');
+        const req = await fetch(`/api/post/${postID}`, { method: 'GET' });
+        const res = await req.json();
+        const post = res.data;
+        if(!res.data){
+          window.open("/","_self")
+          return 
+        }
+
+        const postE = document.querySelector('.post-container');
+        postE.innerHTML = `<div class="post-header">
+                <div class="post-username">${post.users[0].username}</div>
+                </div>
+                <img class="post-image" src="${post.media}" alt="Post Image">
+                <div class="post-title">${post.title}</div>
+                <div class="post-likes">view:${post.viewCount}</div>
+                <div class="post-description">${post.description}</div>`;
+      }
+    </script>
+    <div class="post-container"></div>
+  </body>
 </html>

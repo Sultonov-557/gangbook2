@@ -52,20 +52,23 @@ export class PostService {
     }
 
     const hashTagsArray = [];
+    
+    if(hashtags){
 
-    for (let name of hashtags) {
-      name = name.toLocaleLowerCase();
-      let hashtag = await this.hashTagRepository.findOneBy({ name });
-
-      if (!hashtag) {
-        hashtag = this.hashTagRepository.create({ name });
+      for (let name of hashtags) {
+        name = name.toLocaleLowerCase();
+        let hashtag = await this.hashTagRepository.findOneBy({ name });
+        
+        if (!hashtag) {
+          hashtag = this.hashTagRepository.create({ name });
+        }
+        
+        hashTagsArray.push(hashtag);
       }
-
-      hashTagsArray.push(hashtag);
     }
-
-    const post = this.postRepository.create({
-      description,
+      
+      const post = this.postRepository.create({
+        description,
       media,
       title,
       users: usersArray,
@@ -94,7 +97,7 @@ export class PostService {
   }
 
   async findOne(id: number) {
-    return new ApiResponse(await this.postRepository.findOneBy({ ID: id }));
+    return new ApiResponse(await this.postRepository.findOne({where:{ ID: id },relations:["users"],loadEagerRelations:true}));
   }
 
   async update(id: number, updatePostDto: UpdatePostDto) {

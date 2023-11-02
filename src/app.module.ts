@@ -10,6 +10,7 @@ import { join } from 'path';
 import { PostModule } from './module/post/post.module';
 import { CommentModule } from './module/comment/comment.module';
 import { HashtagModule } from './module/hashtag/hashtag.module';
+import { UserFollowsModule } from './module/user-follows/user-follows.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { HashtagModule } from './module/hashtag/hashtag.module';
     PostModule,
     CommentModule,
     HashtagModule,
+    UserFollowsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

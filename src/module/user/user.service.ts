@@ -1,8 +1,9 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import * as hash from 'bcrypt';
 import { User } from './entities/user.entity';
 import { encrypt } from 'src/common/util/hash.util';
 import { ApiResponse } from 'src/common/http/ApiResponse';
@@ -37,14 +38,19 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const { email } = updateUserDto;
-    if (updateUserDto.email) {
+    let { email,password,role,username } = updateUserDto;
+    if (email) {
       const user = await this.userRepository.findOneBy({ email });
       if (user) {
         throw new BadRequestException(`user with email ${email} already exits`);
       }
     }
-    this.userRepository.update({ ID: id }, updateUserDto);
+
+    if(password){
+      password = await hash.hash(password, 5);
+    }
+
+    await this.userRepository.update({ ID: id }, {email,password,role,username});
     return { success: true };
   }
 

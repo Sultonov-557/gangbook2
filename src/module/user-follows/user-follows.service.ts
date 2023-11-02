@@ -36,4 +36,30 @@ export class UserFollowsService {
 
     return new ApiResponse({ success: true });
   }
+
+  async getFollowers(userID) {
+    const user = await this.userRepository.findOneBy({ ID: userID });
+
+    if (!user) {
+      throw new NotFoundException(`user with id ${userID} not found`);
+    }
+
+    const follows = await this.userFollowRepository.find({
+      relations: ['followingUser', 'User'],
+    });
+    console.log(follows);
+
+    return new ApiResponse(follows);
+  }
+
+  async unfollow(ID) {
+    const follow = await this.userFollowRepository.findOneBy({ ID });
+    if (!follow) {
+      throw new NotFoundException(`follow with id ${ID} not found`);
+    }
+
+    await this.userFollowRepository.delete(follow);
+
+    return new ApiResponse({ success: true });
+  }
 }

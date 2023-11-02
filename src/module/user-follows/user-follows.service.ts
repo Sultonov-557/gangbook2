@@ -46,10 +46,37 @@ export class UserFollowsService {
 
     const follows = await this.userFollowRepository.find({
       relations: ['followingUser', 'User'],
+      where: { User: { ID: userID } },
     });
-    console.log(follows);
 
-    return new ApiResponse(follows);
+    const followingUsers = [];
+
+    for (let i in follows) {
+      followingUsers.push(follows[i].followingUser);
+    }
+
+    return new ApiResponse(followingUsers);
+  }
+
+  async getFollowings(userID) {
+    const user = await this.userRepository.findOneBy({ ID: userID });
+
+    if (!user) {
+      throw new NotFoundException(`user with id ${userID} not found`);
+    }
+
+    const follows = await this.userFollowRepository.find({
+      relations: ['followingUser', 'User'],
+      where: { followingUser: { ID: userID } },
+    });
+
+    const followingUsers = [];
+
+    for (let i in follows) {
+      followingUsers.push(follows[i].User);
+    }
+
+    return new ApiResponse(followingUsers);
   }
 
   async unfollow(ID) {

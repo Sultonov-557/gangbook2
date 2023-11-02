@@ -11,9 +11,14 @@ export class UserFollowsController {
     return this.userFollowsService.follow(body);
   }
 
-  @Get('/:id')
+  @Get('/followers/:id')
   getFollowers(@Param('id') ID) {
     return this.userFollowsService.getFollowers(ID);
+  }
+
+  @Get('/followings/:id')
+  getFollowings(@Param('id') ID) {
+    return this.userFollowsService.getFollowings(ID);
   }
 
   @Delete('/:id')

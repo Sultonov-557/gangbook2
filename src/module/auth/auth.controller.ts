@@ -24,9 +24,4 @@ export class AuthController {
   register(@Body() registerAuthDto: RegisterAuthDto) {
     return this.authService.register(registerAuthDto);
   }
-
-  @Post('verify')
-  verify(@Body() body) {
-    return this.authService.verify(body);
-  }
 }

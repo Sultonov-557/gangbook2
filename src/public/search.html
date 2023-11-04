@@ -70,8 +70,8 @@
           method: 'GET',
         });
 
-        const postRes = await req.json();
-        const posts = res.data;
+        const postRes = await postReq.json();
+        const posts = postRes.data;
 
         for (i of posts) {
           const post = document.createElement('li');
@@ -83,14 +83,14 @@
         const userReq = await fetch(`/api/user/search/${query}`, {
           method: 'GET',
         });
-        const userRes = await req.json();
-        const users = res.data;
+        const userRes = await userReq.json();
+        const users = userRes.data;
 
-        for (i of posts) {
+        for (i of users) {
           const user = document.createElement('li');
-          post.classList.add('search-results-item');
-          post.innerHTML = `<a href="./user?id=${i.ID}">${i.username}</a>`;
-          document.querySelector('.search-results').appendChild(post);
+          user.classList.add('search-results-item');
+          user.innerHTML = `<a href="./user?id=${i.ID}">${i.username}</a>`;
+          document.querySelector('.search-results').appendChild(user);
         }
       }
     </script>

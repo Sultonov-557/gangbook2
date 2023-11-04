@@ -6,8 +6,10 @@
       /* CSS styles for the user page */
       body {
         font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
+        background-color: #131313;
         color: #333;
+
+        color: black;
         margin: 0;
         padding: 0;
       }
@@ -76,17 +78,32 @@
     </style>
   </head>
   <body>
+    <script>
+      start();
+      async function start() {
+        const url = new URL(document.URL);
+        const userID = url.searchParams.get('id');
+        const req = await fetch(`/api/user/${userID}`, { method: 'GET' });
+        const res = await req.json();
+        const user = res.data;
+        if (!res.data) {
+          window.open('/', '_self');
+          return;
+        }
+
+        const userE = document.querySelector('.user-info');
+        userE.innerHTML = ` <img class="user-avatar" src="user-avatar.jpg" alt="User Avatar" />
+        <div class="user-details">
+          <div class="user-name">${user.username}</div>
+          <div class="user-email">${user.email}</div>
+        </div>`;
+      }
+    </script>
     <div id="header">
       <h1>Social Media App</h1>
     </div>
     <div id="content">
-      <div class="user-info">
-        <img class="user-avatar" src="user-avatar.jpg" alt="User Avatar" />
-        <div class="user-details">
-          <div class="user-name">John Doe</div>
-          <div class="user-email">john.doe@example.com</div>
-        </div>
-      </div>
+      <div class="user-info"></div>
       <div class="user-posts">
         <div class="post">
           <div class="title">Post Title 1</div>

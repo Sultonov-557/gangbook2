@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -28,7 +28,7 @@
         font-weight: bold;
       }
 
-      .post-title{
+      .post-title {
         font-size: 200%;
       }
 
@@ -51,16 +51,16 @@
   </head>
   <body>
     <script>
-      start()
-          async function start() {
+      start();
+      async function start() {
         const url = new URL(document.URL);
         const postID = url.searchParams.get('id');
         const req = await fetch(`/api/post/${postID}`, { method: 'GET' });
         const res = await req.json();
         const post = res.data;
-        if(!res.data){
-          window.open("/","_self")
-          return 
+        if (!res.data) {
+          window.open('/', '_self');
+          return;
         }
 
         const postE = document.querySelector('.post-container');

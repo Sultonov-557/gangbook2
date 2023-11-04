@@ -1,14 +1,26 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { UserFollowsService } from './user-follows.service';
 import { FollowDto } from './dto/follow.dto';
+import { AuthGuard } from 'src/common/guards/auth.guard';
+import { RequestWithID } from 'src/common/interface/Request.type';
 
 @Controller('api/follow')
 export class UserFollowsController {
   constructor(private readonly userFollowsService: UserFollowsService) {}
 
-  @Post()
-  follow(@Body() body: FollowDto) {
-    return this.userFollowsService.follow(body);
+  @UseGuards(AuthGuard)
+  @Post(':id')
+  follow(@Param('id') followUserID: number, @Req() req: RequestWithID) {
+    return this.userFollowsService.follow(followUserID, req);
   }
 
   @Get('/followers/:id')
@@ -21,8 +33,9 @@ export class UserFollowsController {
     return this.userFollowsService.getFollowings(ID);
   }
 
+  @UseGuards(AuthGuard)
   @Delete('/:id')
-  unfollow(@Param('id') ID) {
-    return this.userFollowsService.unfollow(ID);
+  unfollow(@Param('id') ID, @Req() req: RequestWithID) {
+    return this.userFollowsService.unfollow(ID, req);
   }
 }

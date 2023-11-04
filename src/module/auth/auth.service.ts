@@ -4,7 +4,7 @@ import { RegisterAuthDto } from './dto/register-auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
 import * as hash from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
+import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import { encrypt } from 'src/common/util/hash.util';
 
@@ -13,9 +13,10 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private jwt: JwtService,
   ) {}
-  
-  async login(body:LoginAuthDto) {
+
+  async login(body: LoginAuthDto) {
     const { username, password } = body;
 
     if (!username || !password) {
@@ -32,7 +33,7 @@ export class AuthService {
       throw new BadRequestException('username or password wrong');
     }
 
-    const token = jwt.sign({ ID: user.ID }, 'secret', { expiresIn: '200d' });
+    const token = this.jwt.sign({ ID: user.ID });
 
     user.token = encrypt(token);
 
@@ -41,7 +42,7 @@ export class AuthService {
     return { success: true, token };
   }
 
-  async register(body:RegisterAuthDto) {
+  async register(body: RegisterAuthDto) {
     const { username, password, email } = body;
 
     const userExists: boolean = await this.userRepository.exist({
@@ -54,32 +55,14 @@ export class AuthService {
 
     const hashedPassword = await hash.hash(password, 5);
 
-    const user= this.userRepository.create({
+    const user = this.userRepository.create({
       username,
       password: hashedPassword,
       email,
     });
-    
-    await this.userRepository.save(user)
+
+    await this.userRepository.save(user);
 
     return { success: true };
-  }
-
-  async verify(body) {
-    const { token } = body;
-
-    try {
-      const { ID } = await jwt.verify(token, 'secret');
-
-      const userExists = await this.userRepository.exist({ where: { ID } });
-
-      if (!userExists) {
-        return { success: false };
-      }
-
-      return { success: true };
-    } catch {
-      return { success: false };
-    }
   }
 }

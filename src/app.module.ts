@@ -17,7 +17,7 @@ import { UserFollowsModule } from './module/user-follows/user-follows.module';
     TypeOrmModule.forRoot(databaseConfig),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', '/src', '/public'),
-      serveStaticOptions: { extensions: ['html'] ,redirect:false},
+      serveStaticOptions: { extensions: ['html'], redirect: false },
     }),
     AuthModule,
     UserModule,

@@ -6,6 +6,7 @@ import { UserFollow } from './entities/user-follow.entity';
 import { FollowDto } from './dto/follow.dto';
 import { ApiResponse } from 'src/common/http/ApiResponse';
 import { NotFoundError } from 'rxjs';
+import { RequestWithID } from 'src/common/interface/Request.type';
 
 @Injectable()
 export class UserFollowsService {
@@ -15,10 +16,8 @@ export class UserFollowsService {
     private userFollowRepository: Repository<UserFollow>,
   ) {}
 
-  async follow(body: FollowDto) {
-    const { UserID, followingUserID } = body;
-
-    const User = await this.userRepository.findOneBy({ ID: UserID });
+  async follow(followingUserID: number, req: RequestWithID) {
+    const User = await this.userRepository.findOneBy({ ID: req.userID });
     const followingUser = await this.userRepository.findOneBy({
       ID: followingUserID,
     });
@@ -73,16 +72,21 @@ export class UserFollowsService {
     const followingUsers = [];
 
     for (let i in follows) {
-      followingUsers.push(follows[i].User);
+      const { ID, username, email, role, createdAt, updatedAt } =
+        follows[i].User;
+      followingUsers.push({ ID, username, email, role, createdAt, updatedAt });
     }
 
     return new ApiResponse(followingUsers);
   }
 
-  async unfollow(ID) {
-    const follow = await this.userFollowRepository.findOneBy({ ID });
+  async unfollow(userID: number, req: RequestWithID) {
+    const follow = await this.userFollowRepository.findOneBy({
+      User: { ID: userID },
+      followingUser: { ID: req.userID },
+    });
     if (!follow) {
-      throw new NotFoundException(`follow with id ${ID} not found`);
+      throw new NotFoundException(`follow with id ${userID} not found`);
     }
 
     await this.userFollowRepository.delete(follow);

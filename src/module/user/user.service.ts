@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -34,11 +38,15 @@ export class UserService {
   }
 
   async findOne(id: number) {
-    return await this.userRepository.findOne({ where: { ID: id } });
+    const user = await this.userRepository.findOne({ where: { ID: id } });
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
+    return new ApiResponse(user);
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    let { email,password,role,username } = updateUserDto;
+    let { email, password, role, username } = updateUserDto;
     if (email) {
       const user = await this.userRepository.findOneBy({ email });
       if (user) {
@@ -46,11 +54,14 @@ export class UserService {
       }
     }
 
-    if(password){
+    if (password) {
       password = await hash.hash(password, 5);
     }
 
-    await this.userRepository.update({ ID: id }, {email,password,role,username});
+    await this.userRepository.update(
+      { ID: id },
+      { email, password, role, username },
+    );
     return { success: true };
   }
 

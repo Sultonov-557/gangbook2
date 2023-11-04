@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -40,7 +40,7 @@
         border-radius: 4px;
         margin-bottom: 5px;
       }
-      .search-results-item a{
+      .search-results-item a {
         color: white;
         text-decoration: none;
       }
@@ -59,22 +59,40 @@
       <ul class="search-results"></ul>
     </div>
     <script>
-        start();
-        async function start() {
-          const url = new URL(document.URL);
-          const query = url.searchParams.get('query');
-          if(!query)return
-          document.querySelector("input").value=query
-          const req = await fetch(`/api/post/search/${query}`, { method: 'GET' });
-          const res = await req.json();
-          const data = res.data;
-          for(i of data){
-              const post=document.createElement("li")
-              post.classList.add("search-results-item")
-              post.innerHTML=`<a href="./post?id=${i.ID}">${i.title}</a>`
-              document.querySelector(".search-results").appendChild(post)
-          }
+      start();
+      async function start() {
+        const url = new URL(document.URL);
+        const query = url.searchParams.get('query');
+        if (!query) return;
+        document.querySelector('input').value = query;
+
+        const postReq = await fetch(`/api/post/search/${query}`, {
+          method: 'GET',
+        });
+
+        const postRes = await req.json();
+        const posts = res.data;
+
+        for (i of posts) {
+          const post = document.createElement('li');
+          post.classList.add('search-results-item');
+          post.innerHTML = `<a href="./post?id=${i.ID}">${i.title}</a>`;
+          document.querySelector('.search-results').appendChild(post);
         }
-      </script>
+
+        const userReq = await fetch(`/api/user/search/${query}`, {
+          method: 'GET',
+        });
+        const userRes = await req.json();
+        const users = res.data;
+
+        for (i of posts) {
+          const user = document.createElement('li');
+          post.classList.add('search-results-item');
+          post.innerHTML = `<a href="./user?id=${i.ID}">${i.username}</a>`;
+          document.querySelector('.search-results').appendChild(post);
+        }
+      }
+    </script>
   </body>
 </html>

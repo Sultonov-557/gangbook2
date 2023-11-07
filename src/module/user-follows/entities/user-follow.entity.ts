@@ -1,14 +1,29 @@
 import { RootEntity } from 'src/common/entity/root.entity';
 import { User } from 'src/module/user/entities/user.entity';
-import { Entity, JoinColumn, OneToOne } from 'typeorm';
+import {
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 
 @Entity()
 export class UserFollow extends RootEntity {
-  @OneToOne(() => User, { createForeignKeyConstraints: false })
-  @JoinColumn()
+  @ManyToOne(
+    () => User,
+    (user) => {
+      user.ID;
+    },
+  )
   followingUser: User;
 
-  @OneToOne(() => User, { createForeignKeyConstraints: false })
-  @JoinColumn()
+  @ManyToOne(
+    () => User,
+    (user) => {
+      user.ID;
+    },
+  )
   User: User;
 }

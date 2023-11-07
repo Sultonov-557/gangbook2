@@ -17,7 +17,7 @@ import { RequestWithID } from 'src/common/interface/Request.type';
 export class UserFollowsController {
   constructor(private readonly userFollowsService: UserFollowsService) {}
 
-  @UseGuards(AuthGuard)
+  //@UseGuards(AuthGuard)
   @Post(':id')
   follow(@Param('id') followUserID: number, @Req() req: RequestWithID) {
     return this.userFollowsService.follow(followUserID, req);

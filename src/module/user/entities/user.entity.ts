@@ -1,7 +1,15 @@
 import { RootEntity } from 'src/common/entity/root.entity';
 import { UserRole } from 'src/common/enum/userRole.enum';
 import { Post } from 'src/module/post/entities/post.entity';
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
+import { UserFollow } from 'src/module/user-follows/entities/user-follow.entity';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 
 @Entity()
 export class User extends RootEntity {
@@ -22,4 +30,10 @@ export class User extends RootEntity {
 
   @ManyToMany(() => Post, (post) => post.users, { cascade: true })
   posts: Post[];
+
+  @OneToMany(() => UserFollow, (userFollow) => userFollow.followingUser)
+  following: UserFollow[];
+
+  @OneToMany(() => UserFollow, (userFollow) => userFollow.User)
+  followers: UserFollow[];
 }

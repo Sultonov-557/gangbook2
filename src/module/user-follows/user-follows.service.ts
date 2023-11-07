@@ -17,7 +17,7 @@ export class UserFollowsService {
   ) {}
 
   async follow(followingUserID: number, req: RequestWithID) {
-    const User = await this.userRepository.findOneBy({ ID: req.userID });
+    const User = await this.userRepository.findOneBy({ ID: followingUserID });
     const followingUser = await this.userRepository.findOneBy({
       ID: followingUserID,
     });

@@ -9,6 +9,7 @@ import { User } from '../user/entities/user.entity';
 import { ApiResponse } from 'src/common/http/ApiResponse';
 import { FindAllDto } from './dto/findAll.dot';
 import { Hashtag } from '../hashtag/entities/hashtag.entity';
+import { RequestWithID } from 'src/common/interface/Request.type';
 
 @Injectable()
 export class PostService {
@@ -52,23 +53,22 @@ export class PostService {
     }
 
     const hashTagsArray = [];
-    
-    if(hashtags){
 
+    if (hashtags) {
       for (let name of hashtags) {
         name = name.toLocaleLowerCase();
         let hashtag = await this.hashTagRepository.findOneBy({ name });
-        
+
         if (!hashtag) {
           hashtag = this.hashTagRepository.create({ name });
         }
-        
+
         hashTagsArray.push(hashtag);
       }
     }
-      
-      const post = this.postRepository.create({
-        description,
+
+    const post = this.postRepository.create({
+      description,
       media,
       title,
       users: usersArray,
@@ -89,15 +89,21 @@ export class PostService {
     const posts = await this.postRepository.find({
       take: pagination.limit,
       skip: pagination.offset,
-      relations:["users"],
-      loadEagerRelations:true
+      relations: ['users'],
+      loadEagerRelations: true,
     });
 
     return new ApiResponse(posts, pagination);
   }
 
   async findOne(id: number) {
-    return new ApiResponse(await this.postRepository.findOne({where:{ ID: id },relations:["users"],loadEagerRelations:true}));
+    return new ApiResponse(
+      await this.postRepository.findOne({
+        where: { ID: id },
+        relations: ['users'],
+        loadEagerRelations: true,
+      }),
+    );
   }
 
   async update(id: number, updatePostDto: UpdatePostDto) {
@@ -112,8 +118,11 @@ export class PostService {
     return new ApiResponse(true);
   }
 
-  async remove(id: number) {
-    const post = await this.postRepository.findOneBy({ ID: id });
+  async remove(id: number, req: RequestWithID) {
+    const post = await this.postRepository.findOneBy({
+      ID: id,
+      users: { ID: req.userID },
+    });
 
     if (!post) {
       throw new NotFoundException('post not found');
